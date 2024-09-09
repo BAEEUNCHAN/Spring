@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title></title>
 </head>
+<body>
 	<div>
 		<h3>전체 부서 조회</h3>
 		<table>
@@ -16,7 +17,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<th:block th:each="info : ${depts}">
+				<th:block th:each="info,sts : ${depts}">
 					<tr>
 						<td>[[ ${info.departmentId} ]]</td>
 						<td>[[ ${info.departmentName} ]]</td>
@@ -27,7 +28,17 @@
 			</tbody>
 		</table>
 	</div>
-<body>
-
+	<script>
+		const context = $('meta[name="ctxPath"]').attr('value');
+		$('tbody > tr').on(
+				'click',
+				function(e) {
+					let trTag = e.currentTarget;
+					let did = $(trTag).children().eq(0).text();
+					let url = (context == undefined ? '' : context)
+							+ '/deptInfo?departmentId=' + did;
+					location.href = url;
+				});
+	</script>
 </body>
 </html>
