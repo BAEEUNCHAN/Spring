@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
+<body>
+	<form name="updateForm" th:object="${dept}">
+			<h3>사원 정보 조회</h3>
+		<div>
+			<label for="did">부서번호</label>
+			<input type="number" id="did" th:field="*{departmentId}">
+		</div>
+		<div>
+			<label for="dname">부서이름</label>
+			<input type="text" id="dname" th:field="*{departmentName}">
+		</div>
+		<div>
+			<label for="manager">부서책임자</label>
+			<input type="number" id="manager" th:field="*{managerId}" readonly>
+		</div>
+		<div>
+			<label for="loca">근무지</label>
+			<input type="text" id="loca" th:field="*{locationId}" readonly>
+		</div>
+		<div>			
+			<button type="button" id="updateBtn">저장</button>
+		</div>
+	</form>
+	<script>
+		$('#updateBtn').on('click', updateAjax);
+
+		function updateAjax(event){
+			// 1) 보낼 데이터 가져오기
+			let dataObj = getFormData();
+			// 2) AJAX
+			$.ajax("deptUpdate", {
+				type : 'post',  //method
+				//data : dataObj	// 객체 => QueryString
+				
+				//JOSN : @RequestBody
+				contentType : 'application/json',
+				data:JSON.stringify(dataObj)
+			})
+			.done((data)=>{
+				if(data.result){
+					alert('성공적으로 수정되었습니다.');
+				}else{
+					alert('수정되지 않았습니다.');
+				}
+			})
+			.fail((err)=>console.log(err));
+		}
+
+		function getFormData(){
+			let formAry = $('form[name="updateForm"]').serializeArray();
+			/*
+			[ { name : "departmentId", value : "110"},
+				{ name : "deparmentName",  value : "Accounting"},
+				 ... ]
+			*/
+
+			let formObj = {};
+			$.each(formAry, function(idx, tag){
+					// tag) { name : "departmentId", value : "110"}
+					formObj[tag.name] = tag.value;
+					//formObj["departmentId"] = "110";
+			});
+
+			return formObj;/* { "departmentId" : 110, "departmentName" : "Accounting", ...} */
+		}
+	</script>
+</body>
+</html>

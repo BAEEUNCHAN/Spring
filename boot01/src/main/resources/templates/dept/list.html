@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+	<div>
+		<h3>전체 부서 조회</h3>
+		<table>
+			<thead>
+				<tr>
+					<th>부서번호</th>
+					<th>부서명</th>
+					<th>부서책임자</th>
+					<th>근무지</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="info : ${depts}">
+					<tr>
+						<td>[[ ${info.departmentId} ]]</td>
+						<td>[[ ${info.departmentName} ]]</td>
+						<td>[[ ${info.managerId} ]]</td>
+						<td>[[ ${info.locationId} ]]</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>
+<body>
+
+</body>
+</html>

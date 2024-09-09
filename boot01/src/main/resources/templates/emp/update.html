@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
+<body>
+	<form name="updateForm" th:object="${emp}">
+		<h3>사원 정보 수정</h3>	
+		<div>
+			<label for="eid">사원번호</label>
+			<input type="number" id="eid" th:field="*{employeeId}" readonly>
+		</div>	
+		<div>
+			<label for="ename">이름</label>
+			<input type="text" id="ename" name="lastName" th:value="${emp.lastName}">
+		</div>
+		<div>
+			<label for="email">이메일</label>
+			<input type="email" id="email" th:field="*{email}">
+		</div>
+		<div>
+			<label for="hDate">입사일자</label>
+			<input type="date" id="hDate" th:field="*{hireDate}">
+		</div>
+		<div>
+			<label for="job">업무</label>
+			<input type="text" id="job" th:field="*{jobId}">
+		</div>
+		<div>
+			<label for="sal">급여</label>
+			<input type="number" step="0.01" min="1" 
+						      id="sal" th:field="*{salary}">
+		</div>
+		<div>			
+			<button type="button" id="updateBtn">저장</button>
+		</div>
+	</form>
+	<script>
+		$('#updateBtn').on('click', updateAjax);
+
+		function updateAjax(event){
+			// 1) 보낼 데이터 가져오기
+			let dataObj = getFormData();
+			// 2) AJAX
+			$.ajax("empUpdate", {
+				type : 'post',  //method
+				//data : dataObj	// 객체 => QueryString
+				
+				//JOSN : @RequestBody
+				contentType : 'application/json',
+				data:JSON.stringify(dataObj)
+			})
+			.done((data)=>{
+				if(data.result){
+					alert('성공적으로 수정되었습니다.');
+				}else{
+					alert('수정되지 않았습니다.');
+				}
+			})
+			.fail((err)=>console.log(err));
+		}
+
+		function getFormData(){
+			let formAry = $('form[name="updateForm"]').serializeArray();
+			/*
+			[ { name : "employeeId", value : "100"},
+				{ name : "lastName",  value : "King"},
+				 ... ]
+			*/
+
+			let formObj = {};
+			$.each(formAry, function(idx, tag){
+					// tag) { name : "employeeId", value : "100"}
+					formObj[tag.name] = tag.value;
+					//formObj["employeeId"] = "100";
+			});
+
+			return formObj;/* { "employeeId" : 100, "lastName" : "King", ...} */
+		}
+	</script>
+</body>
+</html>

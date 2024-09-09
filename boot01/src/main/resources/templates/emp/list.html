@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
+<body>
+	<div class="container">
+		<h3>전체 사원 조회</h3>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>사원번호</th>
+					<th>이름</th>
+					<th>입사일자</th>
+					<th>업무</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="info, sts : ${emps}">
+					<!-- info <=> EmpVO => <tr/>  -->
+					<!--  반복하고자 하는 코드 -->
+					<!--/* <tr th:onclick="|location.href='@{/empInfo(employeeId=${info.employeeId})}'|"> */-->
+					<tr>
+						<td>[[${sts.count}]]</td>
+						<td th:text="${info.employeeId}" />
+						<td th:text="${info.lastName}"/>
+						<!--/* <td>입사일자 : [[ ${info.hireDate} ]]</td> */-->
+						<td>[[ ${ #dates.format(info.hireDate, "yy년 MM월 dd일" ) }]]</td>
+						<td>[[ ${ emps[sts.index].jobId } ]]</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+	</div>	
+	<script>
+		const context = $('meta[name="ctxPath"]').attr('value'); //val();
+		$('tbody > tr').on('click', function(event){
+			let trTag = event.currentTarget;
+			let eid = $(trTag).children().eq(1).text();
+			let url = context + '/empInfo?employeeId=' + eid;
+			location.href=url;
+		});
+	</script>
+</body>
+</html>
